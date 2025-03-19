@@ -17,7 +17,7 @@ jobs:
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 'stable'  # You can specify a version, e.g., '3.10.0'
+        flutter-version: '3.24.5'  
 
     - name: Install Dependencies
       run: flutter pub get
@@ -27,6 +27,7 @@ jobs:
 
     - name: Build APK (Release)
       run: flutter build apk --release
+
 
 
 # Workflow Explanation:
