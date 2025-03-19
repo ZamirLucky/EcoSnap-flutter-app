@@ -1,0 +1,43 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 'stable'  # You can specify a version, e.g., '3.10.0'
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Run Tests
+      run: flutter test
+
+    - name: Build APK (Release)
+      run: flutter build apk --release
+
+
+# Workflow Explanation:
+
+# Triggering Events: The workflow triggers on pushes and pull requests to the main branch.
+# Environment Setup: It runs on an ubuntu-latest virtual machine.
+# Checkout Step: Uses the official checkout action to pull down your repository.
+# Flutter Setup: Uses a community GitHub Action to set up the Flutter environment.
+# Dependencies & Testing: It installs project dependencies and runs your tests.
+# Build Step: Finally, it builds the APK in release mode, which you can later extend to support additional platforms (iOS, web, etc.) as needed.
+
+
+
+  
