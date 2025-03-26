@@ -1,3 +1,4 @@
+import 'package:ecosnap/screens/create_post_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeWidget extends StatelessWidget {
@@ -37,6 +38,10 @@ class HomeWidget extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to the camera screen
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CreatePostScreen()),
+                );
               },
               child: const Text('Go to Captures'),
             ),
