@@ -1,9 +1,9 @@
 import 'package:ecosnap/widgets/create_post_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 
 class CreatePostScreen extends StatelessWidget {
-  const CreatePostScreen({Key? key});
+  const CreatePostScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
