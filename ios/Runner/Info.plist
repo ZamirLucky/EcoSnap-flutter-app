@@ -44,6 +44,9 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	<true/>	
+	// Camera plugin for iOS
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera to capture photos.</string>	
 </dict>
 </plist>

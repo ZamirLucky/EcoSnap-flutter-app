@@ -1,4 +1,5 @@
 import 'package:ecosnap/navigation_menu.dart';
+import 'package:ecosnap/screens/create_post_screen.dart';
 import 'package:ecosnap/widgets/home_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _widgetOptions = [
     const Center(child: HomeWidget()),
     // Other pages will be added here
+    const Center(child: CreatePostScreen()),
   ];
 
   void _onItemTapped(int index) {

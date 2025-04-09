@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env: 
+      APP_CHECK_DEBUG_TOKEN_FROM_CI: ${{ secrets.PASS_APP_CHECK_ANDROID }}
 
     steps:
     - name: Checkout repository
