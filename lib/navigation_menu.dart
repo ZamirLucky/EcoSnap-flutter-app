@@ -23,7 +23,7 @@ class NavigationMenu extends StatelessWidget {
         child: Container(
           height: 60,
           decoration: const BoxDecoration(
-            color: Colors.lightGreen,
+            color: Color.fromARGB(255, 19, 156, 55),
             boxShadow: [
               BoxShadow(color: Colors.black12, spreadRadius: 0, blurRadius: 10),
             ],
@@ -35,14 +35,14 @@ class NavigationMenu extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.home,
-                  color: selectedIndex == 0 ? Colors.pink : Colors.grey,
+                  color: selectedIndex == 0 ? Colors.pink : Colors.white,
                 ),
                 onPressed: () => onItemTapped(0),
               ),
               IconButton(
                 icon: Icon(
                   Icons.add,
-                  color: selectedIndex == 1 ? Colors.pink : Colors.grey,
+                  color: selectedIndex == 1 ? Colors.pink : Colors.white,
                 ),
                 onPressed: () => onItemTapped(1),
               ),
@@ -52,14 +52,14 @@ class NavigationMenu extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.search,
-                  color: selectedIndex == 2 ? Colors.pink : Colors.grey,
+                  color: selectedIndex == 2 ? Colors.pink : Colors.white,
                 ),
                 onPressed: () => onItemTapped(2),
               ),
               IconButton(
                 icon: Icon(
                   Icons.person,
-                  color: selectedIndex == 3 ? Colors.pink : Colors.grey,
+                  color: selectedIndex == 3 ? Colors.pink : Colors.white,
                 ),
                 onPressed: () => onItemTapped(3),
               ),

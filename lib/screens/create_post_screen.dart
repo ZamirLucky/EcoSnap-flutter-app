@@ -22,11 +22,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<CameraDescription> _initCamera() async {
-    // Ensure that plugin services are initialized.
+
     WidgetsFlutterBinding.ensureInitialized();
-    // Obtain a list of the available cameras on the device.
+
     final cameras = await availableCameras();
-    // Return the first camera.
+
     return cameras.first;
   }
 
@@ -37,21 +37,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
-            appBar: AppBar(title: Text('Create Post')),
             body: const Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasError) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Create Post')),
+            // appBar: AppBar(title: const Text('Create Post'),
+            //   centerTitle: true,
+            // ),
             body: Center(child: Text('Error: ${snapshot.error}')),
           );
         } else {
-          // When the camera is available, pass it to the CreatePostWidget.
+          // Camera is initialized, proceed with the CreatePostWidget
           final firstCamera = snapshot.data!;
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('Create Post'),
-            ),
+            // appBar: AppBar(
+            //   title: const Text('Create Post'),
+            // ),
             body: CreatePostWidget(camera: firstCamera),
           );
         }
