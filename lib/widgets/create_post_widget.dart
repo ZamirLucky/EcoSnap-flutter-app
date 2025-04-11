@@ -5,12 +5,14 @@ import 'package:camera/camera.dart';
 import 'package:ecosnap/screens/display_picture_screen.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-
+import 'package:image_picker/image_picker.dart';
 
 import 'package:ecosnap/models/post.dart';
 import 'package:ecosnap/widgets/category_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
+//import 'package:flutter/services.dart';
 
 class CreatePostWidget extends StatefulWidget {
   const CreatePostWidget({super.key, required this.camera});
@@ -29,8 +31,8 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   String _imageURL = '';
 
   // camera controller and future to initialize it 
-  late CameraController _cameraController;
-  late Future<void> _initializeControllerFuture; 
+  //late CameraController _cameraController;
+  //late Future<void> _initializeControllerFuture; 
 
   //track the selected color
   CategoryLabel? _selectedCategory = CategoryLabel.litter;
@@ -40,20 +42,20 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
     super.initState();
     // To display the current output from the Camera,
     // create a CameraController.
-      _cameraController = CameraController(
+      //_cameraController = CameraController(
         // Get a specific camera from the list of available cameras.
-        widget.camera,
+       // widget.camera,
         // Define the resolution to use.
-        ResolutionPreset.medium,
-      );
+      //  ResolutionPreset.medium,
+     // );
       // Next, initialize the controller. This returns a Future.
-      _initializeControllerFuture = _cameraController.initialize();
+      //_initializeControllerFuture = _cameraController.initialize();
   }
 
   @override
   void dispose() {
     // Dispose of the controller when the widget is disposed.
-    _cameraController.dispose();
+   // _cameraController.dispose();
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -61,25 +63,73 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
   
   // Function to set the image path
   Future<String> uploadImageToFirebase(String imagePath) async {
-    // Upload the image to Firebase Storage and get the download URL
-    File file = File(imagePath);
-    String fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+    try{
+      File file = File(imagePath);
+      String fileExtension = path.extension(imagePath);
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
 
-    // create a reference to the Firebase Storage location
-    Reference storageRef = FirebaseStorage.instance.ref().child('posts/$fileName');
+      // create a reference to the Firebase Storage location
+      Reference storageRef = FirebaseStorage.instance.ref().child('posts/$fileName');
 
-    // Upload the file to Firebase Storage
-    UploadTask uploadTask = storageRef.putFile(file);
-    await uploadTask.whenComplete(() => null);
+      // Upload the file to Firebase Storage
+      UploadTask uploadTask = storageRef.putFile(file);
+      await uploadTask.whenComplete(() => null);
 
-    // Retrieve the download URL
-    String downloadURL = await storageRef.getDownloadURL();
-    return downloadURL;
+      // Retrieve the download URL
+      String downloadURL = await storageRef.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error uploading image: $e');
+      }
+      return '';
+    }
+  }
+
+
+  Future<void> captureAndUploadImage() async {
+    final ImagePicker picker = ImagePicker(); 
+
+    final XFile? capturedPhoto = await picker.pickImage(source: ImageSource.camera);
+    if (capturedPhoto != null) {
+      if (kDebugMode) {
+        print('========================================================= ');
+        print('');
+        print('Captured image path: ${capturedPhoto.path}');
+        print('');
+        print('========================================================= ');
+      }
+
+      final String firebaseImageUrl = await uploadImageToFirebase(capturedPhoto.path);
+      if (kDebugMode) {
+        print('========================================================= ');
+        print('');
+        print('Firebase image URL: $firebaseImageUrl');       
+        print('');
+        print('========================================================= ');
+      }
+      setState(() {
+        _imageURL = firebaseImageUrl;
+      });
+
+      if (!context.mounted) return;
+      // ignore: use_build_context_synchronously
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => DisplayPictureScreen(
+            imagePath: capturedPhoto.path, 
+          ),
+        ),
+      );
+    } else {
+      if (kDebugMode) {
+        print('Image capture cancelled or failed.');
+      }
+    }
   }
 
   // Function to add a Post to Firebase Realtime Database
   Future<void> addPostToDatabase(AddPost post) async {
-    // Use push() to create a unique key for the new post
     final DatabaseReference dbRef = FirebaseDatabase.instance.ref('posts').push();
     await dbRef.set(post.toJson());
     if (kDebugMode) {
@@ -113,31 +163,7 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
               // catch the error.
               try {
                 // Ensure that the camera is initialized.
-                await _initializeControllerFuture;
-
-                // Attempt to take a picture and get the file `image`
-                // where it was saved.
-                final XFile image = await _cameraController.takePicture();
-
-                // upload the image to Firebase and get the download URL
-                final String firebaseImageUrl = await uploadImageToFirebase(image.path);
-                setState(() {
-                  _imageURL = firebaseImageUrl;
-                });
-
-                if (!context.mounted) return;
-
-                // Navigate to the DisplayPictureScreen passing the new local image path.
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder:
-                        (context) => DisplayPictureScreen(
-                          // Pass the automatically generated path to
-                          // the DisplayPictureScreen widget.
-                          imagePath: image.path,
-                        ),
-                  ),
-                );
+                await captureAndUploadImage();
               } catch (e) {
                 // If an error occurs, log the error to the console.
                 if (kDebugMode) {
@@ -153,13 +179,13 @@ class _CreatePostWidgetState extends State<CreatePostWidget> {
           // Material 3 DropdownMenu for selecting a Category
           DropdownMenu<CategoryLabel>(
             label: const Text('Select a category'),
-            // The list of dropdown entries from your enum
+
             dropdownMenuEntries: CategoryLabel.entries,
 
-            // The current selected value
+
             initialSelection: _selectedCategory,
 
-            // Callback when a new color is selected
+
             onSelected: (CategoryLabel? newCategory) {
               setState(() {
                 _selectedCategory = newCategory;

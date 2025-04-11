@@ -12,15 +12,16 @@ android {
     compileSdkVersion 35
     // You can remove the following line if you explicitly set compileSdkVersion above.
     // compileSdk = flutter.compileSdkVersion 
-    ndkVersion = flutter.ndkVersion
-
+    //ndkVersion = flutter.ndkVersion
+    ndkVersion = "25.1.8937393"
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8 //JavaVersion.VERSION_17 
+        targetCompatibility = JavaVersion.VERSION_1_8 //JavaVersion.VERSION_17 //
+        //compilerArgs += ["-Xlint:-options"] // Suppress warnings about options
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_1_8 //JavaVersion.VERSION_17 
     }
 
     defaultConfig {
@@ -47,6 +48,8 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+    
 }
 
 flutter {
